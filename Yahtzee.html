@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Yahtzee</title>
+    <link href="styles.css" rel="stylesheet">
+<!-- Name:	Joseph Delgado
+Course:	235.01
+HomeWork: #2
+-->		
+</head>
+<body>
+<script langauge="JavaScript">
+//<!--
+    // five dice roll & lock 
+var d = [0,0,0,0,0];
+var h = [false,false,false,false,false];
+    // score count for 1 through 6
+var f = [0,0,0,0,0,0]
+    // score count for kinds 
+var z = [0,0,0];
+    // score locks
+var finalScore = [-1,-1,-1,-1,-1,-1,-1,-1,-1];
+var p = false;
+    // counter reset
+var c = 0;
+function roll() 
+{
+    if (p) {
+        reset();
+        p = false;
+    }
+    show();
+    if (c < 3) 
+    {
+        resetNoneHeld();
+        for (var i=0; i<5; i++)
+        {
+            if(!h[i]) {
+                t = document.getElementById("d"+i);
+                d[i] = Math.floor(6*Math.random()) + 1;       
+                t.src="pix/dice"+ d[i]+".gif";
+            }
+            f[d[i]-1] += d[i];
+        }
+        for (var i=6; i<9; i++)
+        {
+            z[i-6]=0;
+        }
+        for (var i = 0; i < 6; i++)
+        {
+            var y = f[i]/(i+1); 
+            if (y == 3) {
+                z[0] = f[i];
+            } else if (y == 4) {
+                z[1] = f[i];
+            } else if (y == 5) {
+                z[2] = f[i];
+            }
+        }
+    c++; 
+    } 
+    console.log(finalScore);
+}
+function resetNoneHeld()
+{
+    for (var i=0; i<6; i++)
+    {
+        f[i] = 0;
+    }
+    for (var i=6; i<9; i++)
+     {
+        z[i-6]=0;
+    }
+}
+function reset()
+{
+    resetNoneHeld();
+    c = 0;
+    var d = [0,0,0,0,0];
+    h = [false,false,false,false,false];
+}
+function clr(x)
+{
+    if(finalScore[x] == -1)
+    {
+        var t = document.getElementById('s'+x);
+        t.innerHTML = "";
+    }
+}
+function clrK(x)
+{
+    if(finalScore[x+6] == -1)
+    {
+        var t = document.getElementById('z'+x);
+        t.innerHTML = "";
+    }
+}
+function scr(x)
+{
+    if(finalScore[x] == -1)
+    {
+        var t = document.getElementById('s'+x);
+        t.innerHTML = f[x];
+    }
+}
+function kin(x)
+{
+    if(finalScore[x+6] == -1)
+    {
+        var t = document.getElementById('z'+x);
+        t.innerHTML = z[x];
+    }
+}
+function hold(x)
+{
+    var t = document.getElementById("d"+x);
+    h[x] =! h[x];
+    if(h[x])
+    {t.src="pix/diceX"+ d[x]+ ".gif";}
+    else
+    {t.src="pix/dice" + d[x] + ".gif";} 
+}
+function show()
+{
+    for (i=0; i<9; i++)
+    {
+        if (finalScore[i] > -1)
+        {
+            var l = (i<=5) ? "s" : "z";
+            var z = (i>=6) ? i-6 : i;
+            var t = document.getElementById(l+z);
+            t.innerHTML = finalScore[i];
+        }
+    }
+
+}
+function holdScore(x)
+{
+    if (!p)
+    {
+        p = true;
+        var l = (x<=5) ? "s" : "z";
+        var i = (x>=6) ? x-6 : x;
+        console.log(i);
+        finalScore[x] = parseInt(document.getElementById(l+i).innerHTML);
+    }
+    if (!finalScore.includes(-1))
+    {
+        var totalF = total();
+        var t = document.getElementById('total');
+        t.innerHTML = totalF;
+    }
+}
+function total()
+{
+    var sum = 0;
+    for (const score of finalScore)
+    {
+        sum += score;
+    }
+    return sum;
+}
+//-->
+
+</script>
+
+
+    <div class="Title">
+        <h1>Yahtzee</h1>
+    </div>
+    <div class="dices">
+        <table class="dices_table">
+            <tr>
+                <td><img id="d0" src="pix/dice0.gif" onclick="hold(0)"></td>
+                <td><img id="d1" src="pix/dice0.gif" onclick="hold(1)"></td>
+                <td><img id="d2" src="pix/dice0.gif" onclick="hold(2)"></td>
+                <td><img id="d3" src="pix/dice0.gif" onclick="hold(3)"></td>
+                <td><img id="d4" src="pix/dice0.gif" onclick="hold(4)"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="container">
+        <div class="scoring">
+            <table class="scoring_table">
+                <tr>
+                    <td class="right">1's</td>
+                    <td class="data" onmouseover="scr(0)" onmouseout="clr(0)" id="s0" onclick="holdScore(0)"></td>
+                </tr>
+                <tr>
+                    <td class="right">2's</td>
+                    <td class="data" onmouseover="scr(1)" onmouseout="clr(1)" id="s1" onclick="holdScore(1)"></td>
+                </tr>
+                <tr>
+                    <td class="right">3's</td>
+                    <td class="data" onmouseover="scr(2)" onmouseout="clr(2)"  id="s2" onclick="holdScore(2)"></td>
+                </tr>
+                <tr>
+                    <td class="right">4's</td>
+                    <td class="data" onmouseover="scr(3)" onmouseout="clr(3)"  id="s3" onclick="holdScore(3)"></td>
+                </tr> 
+                <tr>
+                    <td class="right">5's</td>
+                    <td class="data" onmouseover="scr(4)" onmouseout="clr(4)"  id="s4" onclick="holdScore(4)"></td>
+                </tr>
+                <tr>
+                    <td class="right">6's</td>
+                    <td class="data" onmouseover="scr(5)" onmouseout="clr(5)"  id="s5" onclick="holdScore(5)"></td>
+                </tr>
+                <tr>
+                    <td class="right">3 of a kind</td>
+                    <td class="data" onmouseover="kin(0)" onmouseout="clrK(0)" id="z0" onclick="holdScore(6)"></td>
+                </tr>
+                <tr>
+                    <td class="right">4 of a kind</td>
+                    <td class="data" onmouseover="kin(1)" onmouseout="clrK(1)" id="z1" onclick="holdScore(7)"></td>
+                </tr>
+                <tr>
+                    <td class="right">Yahtzee</td>
+                    <td class="data" onmouseover="kin(2)" onmouseout="clrK(2)" id="z2" onclick="holdScore(8)"></td>
+                </tr>
+                <tr>
+                    <td class="right">Total</td>
+                    <td class="data" id="total"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="buttons">
+            <div class="roll_button">
+                <button class="roll" onclick="roll()">Roll</button>
+            </div>
+            <div class="new_button">
+                <button class="new" onClick="window.location.reload();">New Game</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
